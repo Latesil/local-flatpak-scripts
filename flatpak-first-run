@@ -1,0 +1,21 @@
+#!/usr/bin/sh
+
+program_name=$1
+format=$2
+
+if [ -z "$program_name" ]
+then
+      echo "Empty program name"
+      exit 1
+fi
+
+if [ -z "$format" ]
+then
+	echo "Empty format"
+	exit 1
+fi
+
+flatpak-builder --repo=$HOME/Projects/flatpak/repo --force-clean --ccache --state-dir=$HOME/flatpak/Projects/state-dir/${program_name} build-dir ${program_name}.${format} -y
+flatpak remote-add --if-not-exists --no-gpg-verify local-repo $HOME/Projects/flatpak/repo
+flatpak install ${program_name} -y
+flatpak run ${program_name}
