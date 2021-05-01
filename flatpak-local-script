@@ -1,3 +1,25 @@
 #!/usr/bin/sh
 
-echo Test2
+run() {
+    echo "run"
+}
+
+new() {
+    if [ -z $1 ]; then
+        echo "No param in new func"
+        return 1
+    else
+        echo $1
+    fi
+}
+
+if [ $1 == "run" ]; then
+    run
+elif [ $1 == "new" ]; then
+    if [ -z "$2" ]; then
+        echo "No new name found"
+        exit 1
+    fi
+    value=$2
+    new "$value"
+fi
