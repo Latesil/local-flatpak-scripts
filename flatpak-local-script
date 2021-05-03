@@ -63,7 +63,19 @@ show() {
 }
 
 show_help() {
-    echo "This is help message"
+    echo "Usage:"
+    echo "    flatpak-local-script COMMAND [OPTION…]"
+    echo
+    echo "Builtin Commands:"
+    echo "  Manage installed applications and runtimes"
+    echo "    run                Installs your app in local-repo for further development. Should use only first time."
+    echo "    update             Updates your app in local-repo for further development."
+    echo "    create             Creates alias to your program in config folder in \$Home."
+    echo "    list               Shows all saved aliases."
+    echo "    show               Shows which app is equal to given alias."
+    echo "    remove             Removes given alias from config folder."
+    echo
+    echo "Any other option shows that message."
 }
 
 if [[ $1 == "run" ]]; then
@@ -85,7 +97,7 @@ elif [[ $1 == "create" ]]; then
     exit 0
 elif [[ $1 == "update" ]]; then
     if [[ -z "$2" ]]; then
-        echo "No new name found"
+        echo "No name found"
         exit 1
     fi
     update "$2"
@@ -95,14 +107,14 @@ elif [[ $1 == "list" ]]; then
     exit 0
 elif [[ $1 == "show" ]]; then
     if [[ -z "$2" ]]; then
-        echo "No new name found"
+        echo "No name found"
         exit 1
     fi
     show "$2"
     exit 0
 elif [[ $1 == "remove" ]]; then
     if [[ -z "$2" ]]; then
-        echo "No new name found"
+        echo "No name found"
         exit 1
     fi
     remove "$2"
