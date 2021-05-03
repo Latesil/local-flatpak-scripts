@@ -60,7 +60,7 @@ remove() {
 show() {
     FILE="$DIRECTORY/$1"
     program_name=$(cat $FILE)
-    echo "Alias $1 equals $program_name"
+    echo "$program_name"
 }
 
 show_help() {
