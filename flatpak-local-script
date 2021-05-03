@@ -8,6 +8,11 @@ then
     mkdir -p $DIRECTORY
 fi
 
+if [[ ! -d "$REPO_PATH" ]]
+then
+    mkdir -p $REPO_PATH
+fi
+
 run() { # $1 = alias to program
     PROGRAM_FULL_NAME=$(cat $DIRECTORY/$1)
     PROGRAM_NAME=${PROGRAM_FULL_NAME::-5} #rewrite that
@@ -64,6 +69,8 @@ elif [[ $1 == "update" ]]; then
     exit 0
 elif [[ $1 == "--help" ]]; then
     show_help
+    exit 0
 else
     show_help
+    exit 0
 fi
