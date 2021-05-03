@@ -15,7 +15,7 @@ fi
 
 run() { # $1 = alias to program
     PROGRAM_FULL_NAME=$(cat $DIRECTORY/$1)
-    PROGRAM_NAME=${PROGRAM_FULL_NAME::-5} #rewrite that
+    PROGRAM_NAME="${PROGRAM_FULL_NAME%.*}"
     flatpak-builder --repo=$REPO_PATH --force-clean --ccache --state-dir=$HOME/flatpak/Projects/state-dir/$PROGRAM_NAME build-dir $PROGRAM_FULL_NAME -y
     flatpak remote-add --if-not-exists --no-gpg-verify local-repo $REPO_PATH
     flatpak install $PROGRAM_NAME -y
@@ -33,7 +33,7 @@ create() {
 
 update() {
     PROGRAM_FULL_NAME=$(cat $DIRECTORY/$1)
-    PROGRAM_NAME=${PROGRAM_FULL_NAME::-5} #rewrite that
+    PROGRAM_NAME="${PROGRAM_FULL_NAME%.*}"
     flatpak-builder --repo=$REPO_PATH --force-clean --ccache --state-dir=$HOME/Projects/flatpak/state-dir/$PROGRAM_NAME build-dir $PROGRAM_FULL_NAME -y
     flatpak update $PROGRAM_NAME -y
     flatpak run $PROGRAM_NAME
