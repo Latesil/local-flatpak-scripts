@@ -1,25 +1,67 @@
 #!/usr/bin/sh
 
-run() {
-    echo "run"
+DIRECTORY="$HOME/.config/flatpak-local-script"
+REPO_PATH="$HOME/Projects/flatpak/repo"
+
+if [[ ! -d "$DIRECTORY" ]]
+then
+    mkdir -p $DIRECTORY
+fi
+
+run() { # $1 = alias to program
+    PROGRAM_NAME=$(cat $DIRECTORY/$1)
+    flatpak-builder --repo=$REPO_PATH --force-clean --ccache --state-dir=$HOME/flatpak/Projects/state-dir/$PROGRAM_NAME build-dir $PROGRAM_NAME -y
+    flatpak remote-add --if-not-exists --no-gpg-verify local-repo $REPO_PATH
+    flatpak install $PROGRAM_NAME -y
+    flatpak run $PROGRAM_NAME
 }
 
-new() {
-    if [ -z $1 ]; then
-        echo "No param in new func"
-        return 1
-    else
-        echo $1
+create() {
+    FILE="$DIRECTORY/$1"
+    if [[ -f $FILE ]]; then
+        echo "Config file $FILE is already exists."
+        exit 1
     fi
+    echo $2 >> $FILE
 }
 
-if [ $1 == "run" ]; then
-    run
-elif [ $1 == "new" ]; then
-    if [ -z "$2" ]; then
+update() {
+    PROGRAM_NAME=$(cat $DIRECTORY/$1)
+    flatpak-builder --repo=$REPO_PATH --force-clean --ccache --state-dir=$HOME/Projects/flatpak/state-dir/$PROGRAM_NAME build-dir $PROGRAM_NAME -y
+    flatpak update $PROGRAM_NAME -y
+    flatpak run $PROGRAM_NAME
+}
+
+show_help() {
+    echo "This is help message"
+}
+
+if [[ $1 == "run" ]]; then
+    if [[ -z "$2" ]]; then
+        echo "Please add name to run"
+        exit 1
+    fi
+    run $2
+    exit 0
+elif [[ $1 == "create" ]]; then
+    if [[ -z "$2" ]]; then
+        echo "No new name found"
+        exit 1
+    elif [[ -z "$3" ]]; then
+        echo "No filename provided"
+        exit 1
+    fi
+    create "$2" "$3"
+    exit 0
+elif [[ $1 == "update" ]]; then
+    if [[ -z "$2" ]]; then
         echo "No new name found"
         exit 1
     fi
-    value=$2
-    new "$value"
+    update "$2"
+    exit 0
+elif [[ $1 == "--help" ]]; then
+    show_help
+else
+    show_help
 fi
