@@ -2,6 +2,7 @@
 
 DIRECTORY="$HOME/.config/flatpak-local-script"
 REPO_PATH="$HOME/Projects/flatpak/repo"
+STATE_DIR="$HOME/flatpak/Projects/state-dir/"
 
 if [[ ! -d "$DIRECTORY" ]]
 then
@@ -16,16 +17,16 @@ fi
 run() { # $1 = alias to program
     PROGRAM_FULL_NAME=$(cat $DIRECTORY/$1)
     PROGRAM_NAME="${PROGRAM_FULL_NAME%.*}"
-    flatpak-builder --repo=$REPO_PATH --force-clean --ccache --state-dir=$HOME/flatpak/Projects/state-dir/$PROGRAM_NAME build-dir $PROGRAM_FULL_NAME -y
-    flatpak remote-add --if-not-exists --no-gpg-verify local-repo $REPO_PATH
-    flatpak install $PROGRAM_NAME -y
+    flatpak-builder --repo=$REPO_PATH --force-clean --ccache --state-dir=$STATE_DIR/$PROGRAM_NAME build-dir $PROGRAM_FULL_NAME -y
+    flatpak remote-add --if-not-exists --no-gpg-verify --user local-repo $REPO_PATH
+    flatpak install local-repo $PROGRAM_NAME -y
     flatpak run $PROGRAM_NAME
 }
 
 create() {
     FILE="$DIRECTORY/$1"
     if [[ -f $FILE ]]; then
-        echo "Config file $FILE is already exists."
+        echo "Config file $FILE is already exists"
         exit 1
     fi
     echo $2 >> $FILE
@@ -34,9 +35,31 @@ create() {
 update() {
     PROGRAM_FULL_NAME=$(cat $DIRECTORY/$1)
     PROGRAM_NAME="${PROGRAM_FULL_NAME%.*}"
-    flatpak-builder --repo=$REPO_PATH --force-clean --ccache --state-dir=$HOME/Projects/flatpak/state-dir/$PROGRAM_NAME build-dir $PROGRAM_FULL_NAME -y
-    flatpak update $PROGRAM_NAME -y
+    flatpak-builder --repo=$REPO_PATH --force-clean --ccache --state-dir=$STATE_DIR/$PROGRAM_NAME build-dir $PROGRAM_FULL_NAME -y
+    flatpak update local-repo $PROGRAM_NAME -y
     flatpak run $PROGRAM_NAME
+}
+
+list() {
+    for file in $DIRECTORY/*; do
+        echo "${file##*/}"
+    done
+}
+
+remove() {
+    FILE="$DIRECTORY/$1"
+    if [[ -f $FILE ]]; then
+        rm $FILE
+    else
+        echo "There is no file with name \"$1\" in the config folder"
+        exit 1
+    fi
+}
+
+show() {
+    FILE="$DIRECTORY/$1"
+    program_name=$(cat $FILE)
+    echo "Alias $1 equals $program_name"
 }
 
 show_help() {
@@ -67,8 +90,22 @@ elif [[ $1 == "update" ]]; then
     fi
     update "$2"
     exit 0
-elif [[ $1 == "--help" ]]; then
-    show_help
+elif [[ $1 == "list" ]]; then
+    list
+    exit 0
+elif [[ $1 == "show" ]]; then
+    if [[ -z "$2" ]]; then
+        echo "No new name found"
+        exit 1
+    fi
+    show "$2"
+    exit 0
+elif [[ $1 == "remove" ]]; then
+    if [[ -z "$2" ]]; then
+        echo "No new name found"
+        exit 1
+    fi
+    remove "$2"
     exit 0
 else
     show_help
