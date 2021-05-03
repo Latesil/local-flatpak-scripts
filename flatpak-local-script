@@ -2,7 +2,7 @@
 
 DIRECTORY="$HOME/.config/flatpak-local-script"
 REPO_PATH="$HOME/Projects/flatpak/repo"
-STATE_DIR="$HOME/flatpak/Projects/state-dir/"
+STATE_DIR="$HOME/flatpak/Projects/state-dir"
 
 if [[ ! -d "$DIRECTORY" ]]
 then
@@ -67,7 +67,7 @@ show_help() {
     echo "    flatpak-local-script COMMAND [OPTION…]"
     echo
     echo "Builtin Commands:"
-    echo "    run                Installs your app in local-repo for further development. Should use only first time."
+    echo "    run                Installs your app in local-repo for further development. Should be used only first time."
     echo "    update             Updates your app in local-repo for further development."
     echo "    create             Creates alias to your program in config folder in \$Home."
     echo "    list               Shows all saved aliases."
