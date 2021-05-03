@@ -67,7 +67,6 @@ show_help() {
     echo "    flatpak-local-script COMMAND [OPTION…]"
     echo
     echo "Builtin Commands:"
-    echo "  Manage installed applications and runtimes"
     echo "    run                Installs your app in local-repo for further development. Should use only first time."
     echo "    update             Updates your app in local-repo for further development."
     echo "    create             Creates alias to your program in config folder in \$Home."
