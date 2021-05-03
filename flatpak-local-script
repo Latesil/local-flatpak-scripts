@@ -2,7 +2,8 @@
 
 DIRECTORY="$HOME/.config/flatpak-local-script"
 REPO_PATH="$HOME/Projects/flatpak/repo"
-STATE_DIR="$HOME/flatpak/Projects/state-dir"
+STATE_DIR="$HOME/Projects/flatpak/state-dir"
+
 
 if [[ ! -d "$DIRECTORY" ]]
 then
